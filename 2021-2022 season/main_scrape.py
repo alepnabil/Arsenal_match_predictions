@@ -60,7 +60,7 @@ class Individual_links(Scrape):
     #get the data we want
     def navigate_to_each_link(self):
         match_link=self.match_report_links()
-        #the first one
+        #the first LINK for testing
         match_link=match_link[0]
         first_indv_link='https://www.whoscored.com' + match_link[0:21]+ 'Statistics'+ match_link[21:]
         #print(first_indv_link)
@@ -69,26 +69,30 @@ class Individual_links(Scrape):
         self.driver2=webdriver.Chrome(self.path)
         time.sleep(3)
         self.driver2.get(first_indv_link)
-        #is use html.parser we cannot get the names
+
+        #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
         self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
         time.sleep(3)
 
     def player_ratings(self):
+
+        Players_list=[]
+        Player_rating=[]
         #get player name
         print('getting player name and ratings')
-        #player_name=self.soup2.find_all('a',{"class":"player-link"},href=True)
-        player_name=self.soup2.select('a.player-link span')
-        #stats_table = self.soup2.find("div", {"id": "statistics-table-" }).find("tbody", {"id": "player-table-statistics-body"})
-        print(player_name)
-        #player_name=self.soup2.select('span.iconize iconize-icon-left')
-        #player_rating=self.soup2.select('td.rating')
+        try:
+            #NEED TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME RUN THE SCRAPE
+            time.sleep(3)
+            player_name=self.soup2.select('a.player-link span.iconize.iconize-icon-left')
+            #print('------------getting player name and ratings-----------')
+            for x in player_name:
+                print(x.text)
+                Players_list.append(x.text)
 
-        #print('------------getting player name and ratings-----------')
-        for x in player_name:
-          print(x.text)
-        #for y in player_rating:
-         #   print(y.string)
+        except:
+            print('NO ELEMENT')
 
+        print(Players_list)
 
         #Player={
                # 'name':player_name,
