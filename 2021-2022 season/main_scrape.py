@@ -71,29 +71,44 @@ class Individual_links(Scrape):
         self.driver2.get(first_indv_link)
 
         #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
-        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
         time.sleep(3)
 
     def player_ratings(self):
 
         Players_list=[]
         Player_rating=[]
+
+       #Players_list=pd.Series().dtype(object)
+        #Player_rating=pd.Series().dtype(object)
+
         #get player name
         print('getting player name and ratings')
         try:
             #NEED TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME RUN THE SCRAPE
             time.sleep(3)
             player_name=self.soup2.select('a.player-link span.iconize.iconize-icon-left')
+            player_rating=self.soup2.select('td.rating')
             #print('------------getting player name and ratings-----------')
-            for x in player_name:
-                print(x.text)
-                Players_list.append(x.text)
-
+            for nme in player_name:
+                print(nme.text)
+                Players_list.append(nme.text)
+            for rat in player_rating:
+                print(rat.text)
+                Player_rating.append(rat.text)
         except:
             print('NO ELEMENT')
 
-        print(Players_list)
-        print('saje testing')
+        #Players_list_=pd.Series(Players_list)
+        #Player_rating=pd.Series(Player_rating)
+
+        Players_list=pd.DataFrame(Players_list)
+        Player_rating=pd.DataFrame(Player_rating)
+
+        
+        df=pd.concat([Players_list,Player_rating],axis=1)
+        print(df)
         #Player={
                # 'name':player_name,
                # 'rating':player_rating
