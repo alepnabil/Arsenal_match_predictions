@@ -41,11 +41,6 @@ class Scrape():
         return individual_links
 
 
-    def go_to_each_match_report(self):
-        links=self.match_report_links()
-        #print(links)
-        return links
-
 
 #inherit each match link from main webpage
 # will go to each link and scrape the gk,def,mid,attack rating
@@ -71,8 +66,8 @@ class Individual_links(Scrape):
         self.driver2.get(first_indv_link)
 
         #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
-        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
         time.sleep(3)
 
     def player_ratings(self):
@@ -108,17 +103,16 @@ class Individual_links(Scrape):
 
         
         df=pd.concat([Players_list,Player_rating],axis=1)
-        print(df)
-        #Player={
-               # 'name':player_name,
-               # 'rating':player_rating
-                #}
-        
-        #print(Player)
+        #print(df)
+        return df
 
 
-class Gk():
-    pass
+class Gk(Individual_links):
+    
+    def calculate_ratings(self):
+        ('calculating goalkeeper ratings....')
+        ratings=self.player_ratings()
+        print(ratings)
 
 class Def():
     pass
@@ -132,6 +126,11 @@ class Attack():
 
 #scrape=Scrape('C:\\Program Files (x86)\\chromedriver.exe')
 indv_link=Individual_links('C:\\Program Files (x86)\\chromedriver.exe')
-indv_link.request_page()
-indv_link.navigate_to_each_link()
-indv_link.player_ratings()
+#indv_link.request_page()
+#indv_link.navigate_to_each_link()
+#indv_link.player_ratings()
+
+goalkeeper=Gk('C:\\Program Files (x86)\\chromedriver.exe')
+goalkeeper.request_page()
+goalkeeper.navigate_to_each_link()
+goalkeeper.calculate_ratings()
