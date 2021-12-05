@@ -5,6 +5,8 @@ import selenium
 from selenium import webdriver
 import time
 
+from selenium.webdriver.chrome.webdriver import WebDriver
+
 
 
 class Scrape():
@@ -58,8 +60,17 @@ class Individual_links(Scrape):
     #get the data we want
     def navigate_to_each_link(self):
         match_link=self.match_report_links()
-        print(match_link[0])
-
+        #the first one
+        match_link=match_link[0]
+        first_indv_link='https://www.whoscored.com' + match_link[0:21]+ 'Statistics'+ match_link[21:]
+        #print(first_indv_link)
+        
+        #DRIVER TO GO TO EACH INDIVIDUAL LINKS
+        self.driver2=webdriver.Chrome(self.path)
+        time.sleep(3)
+        self.driver2.get(first_indv_link)
+        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        time.sleep(3)
 
 
 class Gk():
