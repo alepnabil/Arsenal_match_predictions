@@ -93,7 +93,7 @@ class Individual_links(Scrape):
             print('NO ELEMENT')
 
         print(Players_list)
-
+        print('saje testing')
         #Player={
                # 'name':player_name,
                # 'rating':player_rating
