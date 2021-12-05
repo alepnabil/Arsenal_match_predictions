@@ -64,13 +64,38 @@ class Individual_links(Scrape):
         match_link=match_link[0]
         first_indv_link='https://www.whoscored.com' + match_link[0:21]+ 'Statistics'+ match_link[21:]
         #print(first_indv_link)
-        
+
         #DRIVER TO GO TO EACH INDIVIDUAL LINKS
         self.driver2=webdriver.Chrome(self.path)
         time.sleep(3)
         self.driver2.get(first_indv_link)
-        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        #is use html.parser we cannot get the names
+        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
         time.sleep(3)
+
+    def player_ratings(self):
+        #get player name
+        print('getting player name and ratings')
+        #player_name=self.soup2.find_all('a',{"class":"player-link"},href=True)
+        player_name=self.soup2.select('a.player-link span')
+        #stats_table = self.soup2.find("div", {"id": "statistics-table-" }).find("tbody", {"id": "player-table-statistics-body"})
+        print(player_name)
+        #player_name=self.soup2.select('span.iconize iconize-icon-left')
+        #player_rating=self.soup2.select('td.rating')
+
+        #print('------------getting player name and ratings-----------')
+        for x in player_name:
+          print(x.text)
+        #for y in player_rating:
+         #   print(y.string)
+
+
+        #Player={
+               # 'name':player_name,
+               # 'rating':player_rating
+                #}
+        
+        #print(Player)
 
 
 class Gk():
@@ -90,3 +115,4 @@ class Attack():
 indv_link=Individual_links('C:\\Program Files (x86)\\chromedriver.exe')
 indv_link.request_page()
 indv_link.navigate_to_each_link()
+indv_link.player_ratings()
