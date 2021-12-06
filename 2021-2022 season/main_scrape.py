@@ -68,8 +68,11 @@ class Individual_links(Scrape):
         self.driver2.get(first_indv_link)
 
         #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
-        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'xml')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'html5lib')
+        
         time.sleep(3)
 
     def player_ratings(self):
@@ -89,10 +92,10 @@ class Individual_links(Scrape):
             player_rating=self.soup2.select('td.rating')
             #print('------------getting player name and ratings-----------')
             for nme in player_name:
-                print(nme.text)
+                #print(nme.text)
                 Players_list.append(nme.text)
             for rat in player_rating:
-                print(rat.text)
+                #print(rat.text)
                 Player_rating.append(rat.text)
         except:
             print('NO ELEMENT')
@@ -120,23 +123,106 @@ class Gk():
         df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
-        #get only goalkeeper
-        goalkeeper=df[(df['players'].str.lower().str.contains('leno'))|(df['players'].str.lower().str.contains('ramsdale'))]
-        goalkeeper['ratings']=goalkeeper['ratings'].apply(lambda x:(float(x)))
+
+        #cleaning through our data
+        df['ratings']=df['ratings'].replace('-',0)
+        df['ratings']=df['ratings'].apply(lambda x:(float(x)))
+
+        #take only goalkeepers which play(ratings>0)
+        goalkeeper=df[(df['players'].str.lower().str.contains('leno')&df['ratings']>0)|
+        (df['players'].str.lower().str.contains('ramsdale')&df['ratings']>0)]
+    
+        print(goalkeeper)
         #for example both leno and ramsdale play that match, then we just find the average rating for the goalkeeper position
         count=len(goalkeeper)
         avg_gk_ratings=sum(goalkeeper['ratings'])/count
-        print(avg_gk_ratings)
+        print("AVERAGE GK RATINGS:",avg_gk_ratings)
 
    
 class Def():
-    pass
+
+    def calculate_ratings(self):
+        time.sleep(2)
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=df.drop(df.columns[[0]], axis=1)
+        df.columns=['players','ratings']
+
+        #cleaning through our data
+        df['ratings']=df['ratings'].replace('-',0)
+        df['ratings']=df['ratings'].apply(lambda x:(float(x)))
+
+    
+
+
+        #take only defenders which play(ratings>0)
+        defends=df[(df['players'].str.lower().str.contains('tierney')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('white')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('gabriel')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('holding')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('cedric')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('tomiyasu')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('tavares')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('chambers')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('mari')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('kolasinac')& df['ratings']>0)]
+        print(defends)
+        #for example both leno and ramsdale play that match, then we just find the average rating for the goalkeeper position
+        count=len(defends)
+        avg_def_ratings=sum(defends['ratings'])/count
+        print("AVERAGE DEFENDER RATINGS : " , avg_def_ratings)
 
 class Mid():
-    pass
+     def calculate_ratings(self):
+        time.sleep(2)
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=df.drop(df.columns[[0]], axis=1)
+        df.columns=['players','ratings']
+        
+        #cleaning through our data
+        df['ratings']=df['ratings'].replace('-',0)
+        df['ratings']=df['ratings'].apply(lambda x:(float(x)))
+
+        #take only midfielders which play(ratings>0)
+        midfields=df[(df['players'].str.lower().str.contains('partey')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('smith')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('saka')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('odegaard')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('maitland')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('lokonga')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('elneny')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('xhaka')& df['ratings']>0)]
+        print(midfields)
+
+        count=len(midfields)
+        avg_mid_ratings=sum(midfields['ratings'])/count
+        print('AVERAGE MIDFIELD RATINGS : ', avg_mid_ratings)
 
 class Attack():
-    pass
+    def calculate_ratings(self):
+        time.sleep(2)
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=df.drop(df.columns[[0]], axis=1)
+        df.columns=['players','ratings']
+
+        #cleaning through our data
+        df['ratings']=df['ratings'].replace('-',0)
+        df['ratings']=df['ratings'].apply(lambda x:(float(x)))
+
+        #take only forwards which play(ratings>0)
+        forwards=df[(df['players'].str.lower().str.contains('lacazette')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('aubameyang')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('Pépé')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('balogun')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('nketiah')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('martinelli')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('nelson')& df['ratings']>0)]
+        print(forwards)
+
+
+        count=len(forwards)
+        avg_frwd_ratings=sum(forwards['ratings'])/count
+        print('AVERAGE FORWARDS RATING : ', avg_frwd_ratings)
+
 
 
 #scrape=Scrape('C:\\Program Files (x86)\\chromedriver.exe')
@@ -147,3 +233,13 @@ indv_link.player_ratings()
 
 goalkeeper=Gk()
 goalkeeper.calculate_ratings()
+
+defender=Def()
+defender.calculate_ratings()
+
+midfield=Mid()
+midfield.calculate_ratings()
+
+forwards=Attack()
+forwards.calculate_ratings()
+
