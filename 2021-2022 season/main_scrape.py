@@ -1,9 +1,11 @@
+from os import name
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import selenium
 from selenium import webdriver
 import time
+import os
 
 from selenium.webdriver.chrome.webdriver import WebDriver
 
@@ -66,8 +68,8 @@ class Individual_links(Scrape):
         self.driver2.get(first_indv_link)
 
         #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
-        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+        #self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+        self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
         time.sleep(3)
 
     def player_ratings(self):
@@ -104,16 +106,29 @@ class Individual_links(Scrape):
         
         df=pd.concat([Players_list,Player_rating],axis=1)
         #print(df)
-        return df
+        print(df)
+   
+        df.to_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
 
 
-class Gk(Individual_links):
+class Gk():
     
+    #read that csv
+    #calculate their ratings
     def calculate_ratings(self):
-        ('calculating goalkeeper ratings....')
-        ratings=self.player_ratings()
-        print(ratings)
+        time.sleep(2)
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=df.drop(df.columns[[0]], axis=1)
+        df.columns=['players','ratings']
+        #get only goalkeeper
+        goalkeeper=df[(df['players'].str.lower().str.contains('leno'))|(df['players'].str.lower().str.contains('ramsdale'))]
+        goalkeeper['ratings']=goalkeeper['ratings'].apply(lambda x:(float(x)))
+        #for example both leno and ramsdale play that match, then we just find the average rating for the goalkeeper position
+        count=len(goalkeeper)
+        avg_gk_ratings=sum(goalkeeper['ratings'])/count
+        print(avg_gk_ratings)
 
+   
 class Def():
     pass
 
@@ -126,11 +141,9 @@ class Attack():
 
 #scrape=Scrape('C:\\Program Files (x86)\\chromedriver.exe')
 indv_link=Individual_links('C:\\Program Files (x86)\\chromedriver.exe')
-#indv_link.request_page()
-#indv_link.navigate_to_each_link()
-#indv_link.player_ratings()
+indv_link.request_page()
+indv_link.navigate_to_each_link()
+indv_link.player_ratings()
 
-goalkeeper=Gk('C:\\Program Files (x86)\\chromedriver.exe')
-goalkeeper.request_page()
-goalkeeper.navigate_to_each_link()
+goalkeeper=Gk()
 goalkeeper.calculate_ratings()
