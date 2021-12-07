@@ -1,4 +1,4 @@
-from os import name
+from os import link, name
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -8,6 +8,12 @@ import time
 import os
 
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium import webdriver
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+
+
 
 
 
@@ -50,32 +56,32 @@ class Individual_links(Scrape):
 
     def __init__(self, path):
         super().__init__(path)
-        self.driver=webdriver.Chrome(self.path)
-    
+        #self.driver=webdriver.Chrome(self.s)
+        
     #get each match link
     #then navigate to each match link
     #get the data we want
     def navigate_to_each_link(self):
-        match_link=self.match_report_links()
-        #the first LINK for testing
-        match_link=match_link[0]
-        first_indv_link='https://www.whoscored.com' + match_link[0:21]+ 'Statistics'+ match_link[21:]
-        #print(first_indv_link)
+        for link in range (0,5):
+            match_link=self.match_report_links()
+            #the first LINK for testing
+            match_link=match_link[link]
+            first_indv_link='https://www.whoscored.com' + match_link[0:21]+ 'Statistics'+ match_link[21:]
+            #print(first_indv_link)
 
-        #DRIVER TO GO TO EACH INDIVIDUAL LINKS
-        self.driver2=webdriver.Chrome(self.path)
-        time.sleep(3)
-        self.driver2.get(first_indv_link)
+            #DRIVER TO GO TO EACH INDIVIDUAL LINKS
+            self.driver2=webdriver.Chrome(self.path)
+            self.driver2.implicitly_wait(10)
+            self.driver2.get(first_indv_link)
+            #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
+            #self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
+            #self.soup2=BeautifulSoup(self.driver2.page_source,'xml')
+            self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
+            #self.soup2=BeautifulSoup(self.driver2.page_source,'html5lib')
+            self.driver2.implicitly_wait(10)
+            self.player_ratings(link)
 
-        #LOOKS LIKE WE HAVE TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME WE RUN THE SCRIPT?????
-        self.soup2=BeautifulSoup(self.driver2.page_source,'lxml')
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'xml')
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'html.parser')
-        #self.soup2=BeautifulSoup(self.driver2.page_source,'html5lib')
-        
-        time.sleep(3)
-
-    def player_ratings(self):
+    def player_ratings(self,link):
 
         Players_list=[]
         Player_rating=[]
@@ -87,10 +93,19 @@ class Individual_links(Scrape):
         print('getting player name and ratings')
         try:
             #NEED TO KEEP CHANGING FROM HTML.PARSER TO LXML EVERYTIME RUN THE SCRAPE
-            time.sleep(3)
+            
+            #player_name=WebDriverWait(self.driver2, 20).until(
+             #       EC.presence_of_element_located((By.ID,'player-table-statistics-body'))
+            #    )
+            #player_rating=WebDriverWait(self.driver2, 20).until(
+            #        EC.presence_of_element_located((By.CLASS_NAME, 'rating'))
+            #    )
+            self.driver2.implicitly_wait(10)
             player_name=self.soup2.select('a.player-link span.iconize.iconize-icon-left')
             player_rating=self.soup2.select('td.rating')
-            #print('------------getting player name and ratings-----------')
+            print('------------getting player name and ratings-----------')
+            self.driver2.implicitly_wait(10)
+            
             for nme in player_name:
                 #print(nme.text)
                 Players_list.append(nme.text)
@@ -111,16 +126,23 @@ class Individual_links(Scrape):
         #print(df)
         print(df)
    
-        df.to_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df.to_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(link)+'match.csv')
+        
 
 
+#SCRAPE EACH POSITIONS RATINGS
 class Gk():
+
+    def __init__(self,page):
+        self.page=page
+        
     
     #read that csv
     #calculate their ratings
     def calculate_ratings(self):
+        print('-----CALCULATING GOALKEEPER AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
         time.sleep(2)
-        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page)+'match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
 
@@ -139,11 +161,13 @@ class Gk():
         print("AVERAGE GK RATINGS:",avg_gk_ratings)
 
    
-class Def():
+class Def(Gk):
+
 
     def calculate_ratings(self):
+        print('-----CALCULATING DEFENDER AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
         time.sleep(2)
-        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page)+'match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
 
@@ -171,10 +195,13 @@ class Def():
         avg_def_ratings=sum(defends['ratings'])/count
         print("AVERAGE DEFENDER RATINGS : " , avg_def_ratings)
 
-class Mid():
+class Mid(Gk):
+
+
      def calculate_ratings(self):
+        print('-----CALCULATING MIDFIELDERS AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
         time.sleep(2)
-        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page)+'match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
         
@@ -197,10 +224,12 @@ class Mid():
         avg_mid_ratings=sum(midfields['ratings'])/count
         print('AVERAGE MIDFIELD RATINGS : ', avg_mid_ratings)
 
-class Attack():
+class Attack(Gk):
+
     def calculate_ratings(self):
+        print('-----CALCULATING FORWARDS AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
         time.sleep(2)
-        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\first_match.csv')
+        df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page)+'match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
 
@@ -226,20 +255,28 @@ class Attack():
 
 
 #scrape=Scrape('C:\\Program Files (x86)\\chromedriver.exe')
-indv_link=Individual_links('C:\\Program Files (x86)\\chromedriver.exe')
+#indv_link=Individual_links('C:\\Program Files (x86)\\chromedriver.exe')
+#indv_link.request_page()
+#indv_link.navigate_to_each_link()
+#indv_link.player_ratings()
+
+indv_link=Individual_links(ChromeDriverManager().install())
 indv_link.request_page()
 indv_link.navigate_to_each_link()
-indv_link.player_ratings()
+#indv_link.player_ratings()
 
-goalkeeper=Gk()
-goalkeeper.calculate_ratings()
+for i in range(0,5):
+  
+    goalkeeper=Gk(i)
+    goalkeeper.calculate_ratings()
 
-defender=Def()
-defender.calculate_ratings()
+    defender=Def(i)
+    defender.calculate_ratings()
 
-midfield=Mid()
-midfield.calculate_ratings()
+    midfield=Mid(i)
+    midfield.calculate_ratings()
 
-forwards=Attack()
-forwards.calculate_ratings()
+    forwards=Attack(i)
+    forwards.calculate_ratings()
+
 
