@@ -17,7 +17,7 @@ class Gk():
     def calculate_ratings(self):
         ws=self.wb.active
         print('-----CALCULATING GOALKEEPER AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
-        time.sleep(2)
+        time.sleep(5)
         df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page+1)+'_match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
@@ -56,7 +56,6 @@ class Def(Gk):
     def calculate_ratings(self):
         ws=self.wb.active
         print('-----CALCULATING DEFENDER AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
-        time.sleep(5)
         df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page+1)+'_match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
@@ -89,7 +88,7 @@ class Def(Gk):
         #FILL IN THE THIRD COLUMN
         def_column=get_column_letter(3)
         #EXCEPT FOR THE FIRST ROW
-        ws[def_column+str(3)]=avg_def_ratings
+        ws[def_column+str(self.page+2)]=avg_def_ratings
         self.wb.save(r'D:\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\past_ratings.xlsx')
         time.sleep(5)
 
@@ -99,7 +98,6 @@ class Mid(Gk):
      def calculate_ratings(self):
         ws=self.wb.active
         print('-----CALCULATING MIDFIELDERS AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
-        time.sleep(5)
         df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page+1)+'_match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
@@ -136,7 +134,6 @@ class Attack(Gk):
     def calculate_ratings(self):
         ws=self.wb.active
         print('-----CALCULATING FORWARDS AVERAGE RATINGS FOR ', str(self.page +1 ), 'MATCH------')
-        time.sleep(5)
         df=pd.read_csv('D:\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\'+str(self.page+1)+'_match.csv')
         df=df.drop(df.columns[[0]], axis=1)
         df.columns=['players','ratings']
