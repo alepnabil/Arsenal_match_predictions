@@ -7,6 +7,7 @@ import selenium
 from selenium import webdriver
 import time
 import os
+import numpy as np
 
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium import webdriver
@@ -98,40 +99,43 @@ class Past_performance(Predicted_lineups):
             temp_ratings=[]
             print(f'------GOING TO PLAYER {link} PAGE----')
             player_link=links[link]
-            url='https://www.whoscored.com/'+player_link
+            Player_link=player_link.replace('Show','MatchStatistics')
+            url='https://www.whoscored.com/'+Player_link
 
             self.driver.get(url)
             time.sleep(3)
+            premier_league=self.driver.find_element_by_xpath('//*[@id="tournamentOptions"]/dd[1]/a')
+            premier_league.click()
+            time.sleep(2)
             self.soup2=BeautifulSoup(self.driver.page_source,'html.parser')
 
-            check_epl=self.soup2.find_all('div',class_='table-body')
+            rating=self.soup2.find_all('td',class_='rating')
 
-            #go to the table
-            for y in check_epl:
-                #select all rows
-                get_only_epl=y.find_all('a',class_='iconize iconize-icon-left tournament-link',href=True)
-                #check if it's the epl or not
-                for tag in get_only_epl:
-                    print(tag)
-                    #get only the epl's ratings by checking it's link
-                    if 'Premier-League' in tag['href']:
-                        ratings=tag.find('div',class_='col12-lg-1 col12-m-1 col12-s-1 col12-xs-1 divtable-data col-data-rating')
-                        print(ratings)
-                    else:
-                        pass
-            
+            for rat in rating[:6]:
+                print(rat.text)
+                temp_ratings.append(float(rat.text))
+      
 
-            #THE PROBLEM HERE IS THAT IT GETS ALL THE RATINGS WHICH IS MIXED WITH INTERNATIONAL MATCHES
-            ratings=self.soup2.select('div.col12-lg-1.col12-m-1.col12-s-1.col12-xs-1.divtable-data.col-data-rating')
+            avg_past_performance=sum(temp_ratings)/len(temp_ratings)
+            player_ratings.append(avg_past_performance)
+            print(f'THE PAST AVERAGE PERFORMANCE FOR PLAYER {link} IS {avg_past_performance}')
 
-            #for rat in ratings[-6:]:
-            #    print(rat.text)
-            #    temp_ratings.append(float(rat.text))
 
-            #avg_past_performance=sum(temp_ratings)/len(temp_ratings)
-            #print(f'THE PAST AVERAGE PERFORMANCE FOR PLAYER {link} IS {avg_past_performance}')
+        return player_ratings,names
+
+    #function to update to a csv
+    def update_to_excel(self):
+        player_ratings,names=self.calculate_player_ratings()
+
+        Player_ratings=pd.DataFrame(player_ratings)
+        Player_names=pd.DataFrame(names)
+
+        df=pd.concat([Player_ratings,Player_names],axis=1)
+        print(df)
+
+        df.to_csv(r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\predicted_lineups_past_performance.csv')
 
 
 calculate_past_performance=Past_performance('https://www.fantasyfootballscout.co.uk/team-news/',ChromeDriverManager().install())
 #calculate_past_performance.search_players_links()
-calculate_past_performance.calculate_player_ratings()
+calculate_past_performance.update_to_excel()
