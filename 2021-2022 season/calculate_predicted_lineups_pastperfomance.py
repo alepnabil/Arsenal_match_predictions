@@ -1,3 +1,6 @@
+#this script calculates the predicted lineups past performances for the last 6 games
+
+
 import pandas as pd
 import time
 
