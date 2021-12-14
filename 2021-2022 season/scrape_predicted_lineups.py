@@ -1,3 +1,6 @@
+#this script scrapes the predicted line up for upcoming matches and calculate their past performance for 6 games
+
+
 from os import link, name
 import pandas as pd
 import requests
