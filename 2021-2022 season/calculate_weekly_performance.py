@@ -1,3 +1,5 @@
+#this script calculates the actual weekly game actual performance
+
 import pandas as pd
 import time
 
