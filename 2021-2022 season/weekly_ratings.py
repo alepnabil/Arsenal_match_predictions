@@ -1,3 +1,5 @@
+#this script gets each week's game actual performance
+
 from webdriver_manager.chrome import ChromeDriverManager
 from os import link, name
 import pandas as pd
@@ -120,7 +122,7 @@ class Weekly_rating(Scrape):
         #print(df)
         print(df)
    
-        df.to_csv(r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\weekly_performance.csv')
+        df.to_csv('E:\\New folder\\Udemy\\personal data science projects\\Arsenal\\2021-2022 season\\arsenal_match_preds\\2021-2022 season\\weekly_performance.csv')
         
 weekly_link=Weekly_rating(ChromeDriverManager().install())
 weekly_link.request_page()
