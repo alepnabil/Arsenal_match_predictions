@@ -81,7 +81,7 @@ class Mid(Gk):
         midfields=df[(df['players'].str.lower().str.contains('partey')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('smith')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('saka')& df['ratings']>0)|
-        (df['players'].str.lower().str.contains('odegaard')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('martin')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('maitland')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('lokonga')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('elneny')& df['ratings']>0)|
@@ -108,7 +108,7 @@ class Attack(Gk):
         #take only forwards which play(ratings>0)
         forwards=df[(df['players'].str.lower().str.contains('lacazette')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('aubameyang')& df['ratings']>0)|
-        (df['players'].str.lower().str.contains('Pépé')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('nicolas')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('balogun')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('nketiah')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('martinelli')& df['ratings']>0)|
