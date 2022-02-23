@@ -3,6 +3,9 @@
 import pandas as pd
 import time
 
+#list which will contain the names of ARSENAL PLAYERS which PLAYS THE ACTUAL MATCH
+player_names=[]
+
 #SCRAPE EACH POSITIONS RATINGS
 class Gk():
 
@@ -22,14 +25,23 @@ class Gk():
         #take only goalkeepers which play(ratings>0)
         goalkeeper=df[(df['players'].str.lower().str.contains('leno')&df['ratings']>0)|
         (df['players'].str.lower().str.contains('ramsdale')&df['ratings']>0)]
-    
+
+
         print(goalkeeper)
+
+        #append to list for sentiment analysis
+        for player in goalkeeper['players']:
+            player_names.append(player)
+        
+
         #for example both leno and ramsdale play that match, then we just find the average rating for the goalkeeper position
         count=len(goalkeeper)
         avg_gk_ratings=sum(goalkeeper['ratings'])/count
         print("AVERAGE GK RATINGS:",avg_gk_ratings)
         time.sleep(5)
     
+
+
 class Def(Gk):
 
 
@@ -59,6 +71,13 @@ class Def(Gk):
         (df['players'].str.lower().str.contains('mari')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('kolasinac')& df['ratings']>0)]
         print(defends)
+
+        #append to list for sentiment analysis
+        for player in defends['players']:
+            player_names.append(player)
+        
+         
+
         #for example both leno and ramsdale play that match, then we just find the average rating for the goalkeeper position
         count=len(defends)
         avg_def_ratings=sum(defends['ratings'])/count
@@ -88,6 +107,11 @@ class Mid(Gk):
         (df['players'].str.lower().str.contains('xhaka')& df['ratings']>0)]
         print(midfields)
 
+        #append to list for sentiment analysis
+        for player in midfields['players']:
+            player_names.append(player)
+        
+
         count=len(midfields)
         avg_mid_ratings=sum(midfields['ratings'])/count
         print('AVERAGE MIDFIELD RATINGS : ', avg_mid_ratings)
@@ -115,12 +139,15 @@ class Attack(Gk):
         (df['players'].str.lower().str.contains('nelson')& df['ratings']>0)]
         print(forwards)
 
-
+        #append to list for sentiment analysis
+        for player in forwards['players']:
+            player_names.append(player)
+        
         count=len(forwards)
         avg_frwd_ratings=sum(forwards['ratings'])/count
         print('AVERAGE FORWARDS RATING : ', avg_frwd_ratings)
 
-
+    
   
 goalkeeper=Gk()
 goalkeeper.calculate_ratings()
@@ -134,3 +161,4 @@ midfield.calculate_ratings()
 
 forwards=Attack()
 forwards.calculate_ratings()
+
