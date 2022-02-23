@@ -4,6 +4,4 @@
 #import class from another script just to get the names from the appended list
 from calculate_weekly_performance import player_names
 
-
-for x in player_names:
-    print(x)
+print(player_names)
