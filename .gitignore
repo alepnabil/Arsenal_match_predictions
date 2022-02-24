@@ -2,3 +2,4 @@ notebook scraping test
 *.csv
 tempCodeRunnerFile.py
 testing.py
+config.py
