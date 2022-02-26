@@ -10,6 +10,16 @@ import datetime
 import time
 import sys
 
+import re
+
+from textblob import TextBlob
+from nltk.corpus import stopwords
+from textblob import Word
+import nltk
+from wordcloud import STOPWORDS
+from nltk.stem import WordNetLemmatizer
+from nltk.stem import LancasterStemmer
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 class Tweets():
 
@@ -55,7 +65,7 @@ class Tweets():
                 #search for tweets mentioning the player
                 tweets = self.api.search_tweets(q=search_words+'-filter:retweets',
                                     until=self.date_until,
-                                    result_type='recent',
+                                    result_type='mixed',
                                     lang=self.language,
                                     count=self.count
                                     )
@@ -72,9 +82,53 @@ class Tweets():
                 time.sleep(2)
             except :
                 sys.exit("Problem using twitter APIs")
-        df=pd.DataFrame(df)
-        print(df)
+        self.df=pd.DataFrame(df)
+        print(self.df)
 
 
-tweets=Tweets(int(input("How many tweets per player: ")),r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\config.ini')
+class Cleaning_tweet(Tweets):
+
+    #remove any emojis in the tweet since we do not need it
+    #update: vader performs well with emojis and emojis also plays an important role in the sentiment of the tweet
+    def remove_emoji(self,tweet):
+        emoji_pattern = re.compile("["
+            u"\U0001F600-\U0001F64F"  # emoticons
+            u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+            u"\U0001F680-\U0001F6FF"  # transport & map symbols
+            u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                            "]+", flags=re.UNICODE)
+        cleaned_tweet=emoji_pattern.sub(r'', tweet)
+        tweet=cleaned_tweet
+
+    #cleaning tweets to get 'important' text
+    def clean_tweets(self):
+        self.stop=stopwords.words('english')
+        self.ls = LancasterStemmer()
+
+        try:
+            self.df['tweet']=self.df['tweet'].apply(lambda x:x.lower())
+            #self.df['tweet']=self.df['tweet'].apply(lambda x:re.sub(r'[\W\s]', ' ', x))
+            self.df['tweet']=self.df['tweet'].apply(lambda x : ' '.join(review for review in x.split() if review not in self.stop))
+            #self. df['tweet']=self.f['tweet'].apply(self.remove_emoji)
+            self.df['tweet']=self.df['tweet'].apply(lambda x: ls.stem(x))
+        except:
+            print('-------ERROR CLEANING TWEET------')
+        
+        print('-----CLEANED DATAFRAME-----')
+        print(self.df)
+
+class Sentiment(Cleaning_tweet):
+
+    #to categorize the tweets based on their sentiments
+    def calculate_sentiment(self):
+        print('-----------CLASSIFYING INTO SENTIMENTS-------')
+        self.vader=SentimentIntensityAnalyzer()
+        self.sentiment=pd.json_normalize(self.df['tweet'].apply(lambda tweet:self.vader.polarity_scores(str(tweet))))
+        self.df=pd.concat([self.df,self.sentiment],axis=1)
+
+        self.df['sentiment']=self.df['compound'].apply(lambda x: 'positive' if x>=0.05 else ('neutral' if -0.05<x<0.05 else 'negative'))
+
+    
+tweets=Sentiment(int(input("How many tweets per player: ")),r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\config.ini')
 tweets.get_tweets()
+tweets.calculate_sentiment()
