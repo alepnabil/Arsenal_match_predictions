@@ -38,7 +38,7 @@ class Gk():
         count=len(goalkeeper)
         avg_gk_ratings=sum(goalkeeper['ratings'])/count
         print("AVERAGE GK RATINGS:",avg_gk_ratings)
-        time.sleep(5)
+        
     
 
 
@@ -100,7 +100,7 @@ class Mid(Gk):
         midfields=df[(df['players'].str.lower().str.contains('partey')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('smith')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('saka')& df['ratings']>0)|
-        (df['players'].str.lower().str.contains('martin')& df['ratings']>0)|
+        (df['players'].str.lower().str.contains('gaard')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('maitland')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('lokonga')& df['ratings']>0)|
         (df['players'].str.lower().str.contains('elneny')& df['ratings']>0)|
