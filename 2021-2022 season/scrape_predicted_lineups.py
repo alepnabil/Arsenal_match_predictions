@@ -54,6 +54,10 @@ class Predicted_lineups:
             if Predicted_lineups[gabriel]=='Gabriel':
                 Predicted_lineups[gabriel]='gabriel magalhaes'
 
+        for cedric in range(len(Predicted_lineups)):
+            if Predicted_lineups[cedric]=='Cedric':
+                Predicted_lineups[cedric]='Cédric Soares'
+
         print(Predicted_lineups[:11])
         return Predicted_lineups[:11]
 
@@ -136,7 +140,7 @@ class Past_performance(Predicted_lineups):
         df=pd.concat([Player_ratings,Player_names],axis=1)
         print(df)
 
-        df.to_csv(r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\predicted_lineups_past_performance.csv')
+        df.to_csv(r'F:\personal project\arsenal\Arsenal_match_predictions\2021-2022 season\predicted_lineups_past_performance.csv')
 
 
 calculate_past_performance=Past_performance('https://www.fantasyfootballscout.co.uk/team-news/',ChromeDriverManager().install())
