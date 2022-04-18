@@ -2,6 +2,7 @@
 #this script also calcualte the actual game performance for every post match
 
 
+from operator import index
 from calculate_weekly_performance import player_names
 import tweepy as tw
 import configparser
@@ -22,9 +23,19 @@ from wordcloud import STOPWORDS
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import LancasterStemmer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+#nltk.download('stopwords')
 
 
 from sqlalchemy import create_engine 
+
+
+
+ben_white_index=player_names.index("Benjamin White")
+player_names[ben_white_index]='ben white'
+
+sambi_index=player_names.index("Albert Sambi Lokonga ")
+player_names[sambi_index]='lokonga'
+
 class Tweets():
 
     def __init__(self,count,file_path):
@@ -36,7 +47,7 @@ class Tweets():
         #get api keys
         self.api_key=self.config['twitter']['api_key']
         self.api_key_secret=self.config['twitter']['api_key_secret']
-        self.access_token_project=self.config['twitter']['access_token_project']
+        self.access_token_project=self.config['twitter']['access_token']
         self.access_token_secret=self.config['twitter']['access_token_secret']
 
         #set the settings for which tweet to get
@@ -71,6 +82,8 @@ class Tweets():
         #empty list for our dateframe
         df=[]
 
+        print("getting twetes")
+        print(player_names)
         #loop through the players that play the match
         for player in player_names:
             search_words=player
@@ -116,10 +129,10 @@ class Cleaning_tweet(Tweets):
     #cleaning tweets to get 'important' text
     def clean_tweets(self):
         self.stop=stopwords.words('english')
-        self.ls = LancasterStemmer()
+        #self.ls = LancasterStemmer()
 
         #stemming the tweet
-        self.df['tweet']=self.df['tweet'].apply(lambda x: self.ls.stem(x))
+        #self.df['tweet']=self.df['tweet'].apply(lambda x: self.ls.stem(x))
         self.df['tweet']=self.df['tweet'].apply(lambda tweet:re.sub(r"https?:\/\/\S+","",tweet))
 
         
@@ -141,13 +154,13 @@ class Database(Sentiment):
 
     def update_database(self):
         try:
-            self.df.to_sql('player_sentiment3',con=self.engine,if_exists='append',index=False)
+            self.df.to_sql('player_sentiment1',con=self.engine,if_exists='append',index=False)
             print("Done update to database")
         except:
             print("Cannot connect to database")
 
 
-tweets=Database(int(input("How many tweets per player: ")),r'E:\New folder\Udemy\personal data science projects\Arsenal\2021-2022 season\arsenal_match_preds\2021-2022 season\config.ini')
+tweets=Database(int(input("How many tweets per player: ")),'F:\\personal project\\arsenal\\Arsenal_match_predictions\\2021-2022 season\\config.ini')
 tweets.get_tweets()
 tweets.clean_tweets()
 tweets.calculate_sentiment()
