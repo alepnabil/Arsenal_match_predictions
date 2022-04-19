@@ -10,6 +10,13 @@ Weekly prediction of matches will be updated at updated_weekly_prediction.ipynb 
 https://docs.google.com/spreadsheets/d/1cm8YsN_rHArOWOECN9V4z6SZLr6FEwodxyE7vOMAWY8/edit?usp=sharing
 
 
+## Player sentiment analysis
+Player sentiment analysis were also conducted where the data used are tweets related to players. The tweetes were gathered after matches to see the overall sentiment behind their performance post match. Tweets were retrieved using Twitter APIs and analysis were done in PowerBI. 
+The analysis link :
+https://app.powerbi.com/view?r=eyJrIjoiZjczZWZlNjYtNWU3NC00ODJmLTkzN2UtMTc2MDMwZWE5ZTBlIiwidCI6IjFmNTUxYWViLTdlYTEtNDcyYy05YWMwLTA5ZGU5YmYzMzA1MSIsImMiOjEwfQ%3D%3D&pageName=ReportSectionb5424e2e9bbc9b16576b
+
+
+
 
 
 ## Scripts description
