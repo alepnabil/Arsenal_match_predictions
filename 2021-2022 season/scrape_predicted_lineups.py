@@ -140,7 +140,7 @@ class Past_performance(Predicted_lineups):
         df=pd.concat([Player_ratings,Player_names],axis=1)
         print(df)
 
-        df.to_csv(r'F:\personal project\arsenal\Arsenal_match_predictions\2021-2022 season\predicted_lineups_past_performance.csv')
+        df.to_csv(r'D:\personal project\arsenal\Arsenal_match_predictions\2021-2022 season\predicted_lineups_past_performance.csv')
 
 
 calculate_past_performance=Past_performance('https://www.fantasyfootballscout.co.uk/team-news/',ChromeDriverManager().install())
