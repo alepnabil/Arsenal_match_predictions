@@ -122,7 +122,7 @@ class Weekly_rating(Scrape):
         #print(df)
         print(df)
    
-        df.to_csv('F:\\personal project\\arsenal\\Arsenal_match_predictions\\2021-2022 season\\weekly_performance.csv')
+        df.to_csv('D:\\personal project\\arsenal\\Arsenal_match_predictions\\2021-2022 season\\weekly_performance.csv')
         
 weekly_link=Weekly_rating(ChromeDriverManager().install())
 weekly_link.request_page()
